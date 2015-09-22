@@ -1,0 +1,121 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Azure Search - Job Portal Demo</title>
+
+    <!-- Stylesheets -->
+    <link href='http://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Condensed:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="~/content/bootstrap.css">
+    <link rel="stylesheet" href="~/content/font-awesome.min.css">
+    <link rel="stylesheet" href="~/content/flexslider.css">
+    <link rel="stylesheet" href="~/content/style.css">
+    <link rel="stylesheet" href="~/content/responsive.css">
+
+    <!-- Attach CSS for Joyride which is the step through tutorial tool -->
+    <link href="~/Content/joyride-2.1.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery.joyride-2.1.js"></script>
+
+    <!--[if IE 9]>
+            <script src="js/media.match.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+    <div id="wrapper">
+        <header id="header">
+            <div class="container header-wrapper">
+                <div class="row">
+                    &nbsp;&nbsp;&nbsp;This is an <a href="http://azure.microsoft.com/en-us/services/search/">Azure Search</a> demo website based on data from the <a href="https://nycopendata.socrata.com/">NYC Open Data initiative</a>.  Jobs listed here should not be considered active and the data may no longer be accurate.
+                </div> <!-- end .header-wrapper .row -->
+            </div> <!-- end .header-wrapper .container -->
+            <div id="mobile-menu-container" class="container">
+                <div class="login-register"></div>
+                <div class="menu"></div>
+            </div>
+
+            <div class="header-nav">
+                <div class="container">
+                    <!-- Logo -->
+                    <div class="logo-wrapper">
+                        <div class="logo">
+                            <a href="/"><img src="~/images/header-logo.png" alt=""></a>
+                        </div>
+                    </div> <!-- end .logo-wrapper -->
+                    <h1 id="available-jobs-label">Available Jobs <small>(2802 jobs)</small></h1>
+
+                    <ul class="nav">
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/">Jobs</a></li>
+                        <li><a href="http://aka.ms/azsearch">About Azure Search</a></li>
+                    </ul>
+                </div> <!-- end .header-nav .container -->
+            </div>  <!-- end .header-nav -->
+        </header>
+
+        @RenderBody()
+
+        <footer id="footer">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-4 col-md-5">
+                        <div class="widget">
+                            <div class="widget-content">
+                                <img class="logo" src="~/images/header-logo-footer.png" alt="">
+                                <p>This is an Azure Search demo website based on data from the NYC Open Data initiative. Jobs listed here should not be considered active. </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-3 col-md-3">
+                        <div class="widget">
+                            <h5 class="widget-title">Follow Us</h5>
+
+                            <div class="widget-content">
+                                <ul class="footer-links">
+                                    <li><a href="https://azure.microsoft.com/blog/">Blog</a></li>
+                                    <li><a href="https://twitter.com/search?src=typd&q=%23azuresearch">Twitter</a></li>
+                                    <li><a href="http://aka.ms/azsearchforum">Forum</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-3 col-md-3">
+                        <div class="widget">
+                            <h5 class="widget-title">Useful Links</h5>
+
+                            <div class="widget-content">
+                                <ul class="footer-links">
+                                    <li><a href="http://aka.ms/azsearch">About Azure Search</a></li>
+                                    <li><a href="http://aka.ms/azsearchdocs">Azure Search Docs</a></li>
+                                    <li><a href="http://feedback.azure.com/forums/263029-azure-search">Suggestions</a></li>
+                                    <li><a href="https://nycopendata.socrata.com/">NYC Open Data</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="copyright">
+                <div class="container">
+                    <p>&copy; Copyright 2015 <a href="http://www.microsoft.com">Microsoft Corp. All Rights Reserved | <a href="http://go.microsoft.com/fwlink/?LinkId=248681">Privacy</a> | <a href="http://go.microsoft.com/fwlink/?LinkID=206977">Terms of Use</a></p>
+                </div>
+            </div>
+        </footer> <!-- end #footer -->
+
+    </div> <!-- end #wrapper -->
+    <!-- Scripts -->
+    <script>window.jQuery || document.write('<script src="~/scripts/jquery-1.11.0.min.js"><\/script>')</script>
+    <script src="~/scripts/jquery.ba-outside-events.min.js"></script>
+    <script src="~/scripts/jquery.responsive-tabs.js"></script>
+    <script src="~/scripts/jquery.flexslider-min.js"></script>
+    <script src="~/scripts/jquery.fitvids.js"></script>
+    <script src="~/scripts/jquery.inview.min.js"></script>
+    <script src="~/scripts/script.js"></script>
+
+</body>
+</html>

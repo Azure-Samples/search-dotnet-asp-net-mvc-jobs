@@ -1,0 +1,496 @@
+﻿<script type="text/javascript" src="http://ecn.dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=7.0"></script>
+<script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.10.2.min.js"></script>
+<link rel="stylesheet" href="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.11.4/themes/smoothness/jquery-ui.css">
+<script src="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.11.4/jquery-ui.min.js"></script>
+
+<!-- Attach CSS for step through tutorial tool -->
+<script src="~/Scripts/bootstrap-tour-standalone.min.js"></script>
+<link href="~/Content/bootstrap-tour-standalone.min.css" rel="stylesheet" />
+
+<script>
+    $(function () {
+        $("#q").autocomplete({
+            source: "/home/suggest",
+            minLength: 2,
+            select: function (event, ui) {
+                Search();
+            }
+        });
+
+        // Set up the guided tour
+        var tour = new Tour({
+            storage : false,
+            steps: [
+            {
+                element: "#title",
+                placement: "bottom",
+                title: "Welcome to the Azure Search - Jobs demo website",
+                content: "This is purely a demonstration of Azure Search, meant to show the core capabilities of the search service.  Let's walk through the various capabilities of Azure Search.  To get started, press Next.&nbsp;&nbsp;&nbsp;<a href='http://aka.ms/azsearch' target='_blank'>Learn More about Azure Search</a>"
+            },
+            {
+                element: "#q",
+                placement: "left",
+                title: "Search Suggestions",
+                content: "A core capability of Azure Search is its ability to provide search suggestions as the user types.  Try typing a few letters and you will see some suggestions shown below the search box making it easy for user to find results.&nbsp;&nbsp;&nbsp;<a href='https://msdn.microsoft.com/en-us/library/azure/mt131377.aspx' target='_blank'>Learn More about Search Suggestions</a>"
+            },
+            {
+                element: "#q",
+                placement: "bottom",
+                title: "Search",
+                content: "Azure Search, searches through results extremely quickly.  Try typing something such as 'analyst' and press ENTER.&nbsp;&nbsp;&nbsp;<a href='https://msdn.microsoft.com/en-us/library/azure/dn798927.aspx' target='_blank'>Learn More</a>"
+            },
+            {
+                element: "#cmbDistance",
+                placement: "left",
+                title: "Geo-spatial Search",
+                content: "Location based searching is often an important part of search applications.  Using Azure Search you can combine textual search with location such as this query that limits results to a specified area.&nbsp;&nbsp;&nbsp;<a href='https://msdn.microsoft.com/en-us/library/azure/dn798927.aspx' target='_blank'>Learn More</a>"
+            },
+            {
+                element: "#pagination",
+                placement: "right",
+                title: "Paging",
+                content: "Paging allows you to limit the number of results displayed on a page and then let the user jump forward and backward in the search results."
+            },
+            {
+                element: "#job_details_div",
+                placement: "right",
+                title: "Search Results",
+                content: "The search results that come back from Azure Search are returned in a JSON format where you then display them as needed in your web page.  Hit highlighting is a tool available from Azure Search that allows you to visually see results in the text that match what the user typed.  For example, if you typed 'analyst' in the search box, you would see this word highlighted in the results.&nbsp;&nbsp;&nbsp;<a href='https://msdn.microsoft.com/en-us/library/azure/dn798927.aspx' target='_blank'>Learn More</a>"
+            },
+            {
+                element: "#jobs-count",
+                placement: "left",
+                title: "Count",
+                content: "Azure Search can return a count of the number of relevant items that match the users search query.&nbsp;&nbsp;&nbsp;<a href='https://msdn.microsoft.com/en-us/library/azure/dn798927.aspx' target='_blank'>Learn More</a>"
+            },
+            {
+                element: "#cmbSortType",
+                placement: "right",
+                title: "Scoring and Sorting",
+                content: "Sometimes you want to be able to let users sort the results, such as in this case where they might want to sort the results by salary, however, sometimes you will want to tune the results that are displayed to the user using 'Scoring'.  This allows you to boost items in the search relevant results in order to improve the user experience or to help meet business objectives.&nbsp;&nbsp;&nbsp;<a href='https://msdn.microsoft.com/en-us/library/azure/dn798928.aspx' target='_blank'>Learn More about Search Scoring</a>"
+            },
+            {
+                element: "#businessTitleFacetTitle",
+                placement: "right",
+                title: "Faceting & Filtering",
+                content: "Faceted navigation is a filtering mechanism that provides self-directed drilldown navigation in search applications. While the term ‘faceted navigation’ might be unfamiliar, it’s almost a given that you have used one before. As the following example shows, faceted navigation is nothing more than the categories used to filter results.  Try clicking on a facet and see how the results are filtered to only include the specified results.&nbsp;&nbsp;&nbsp;<a href='https://msdn.microsoft.com/en-us/library/azure/dn798927.aspx' target='_blank'>Learn More</a>"
+            }
+
+            ],
+            template: "<div class='popover tour'><div class='arrow'></div><h3 class='popover-title'  style='background-color: #0A5489;color:#FFFFFF'></h3><div class='popover-content'></div><div class='popover-navigation'><button class='btn btn-default' data-role='prev'>« Prev</button><span data-role='separator'> </span><button class='btn btn-default' data-role='next'>Next »</button></div><button class='btn btn-default' data-role='end' style='margin:15px;'>End tour</button></nav></div>"
+        });
+
+        // Initialize the tour
+        tour.init();
+
+        // Start the tour
+        tour.start();
+
+    });
+</script>
+
+<script type="text/javascript">
+    var businessTitleFacet, postingTypeFacet, salaryRangeFacet, sortType, currentPage, zipCode, maxDistance;
+    var map = null;
+    var lat = 40.736224;
+    var lon = -73.992511;
+    var pinLayer, infoboxLayer;
+    var pinInfobox = null;
+    var infoboxLayer = new Microsoft.Maps.EntityCollection();
+    var pinLayer = new Microsoft.Maps.EntityCollection();
+
+    $(function () {
+        // Load the initial data
+        currentPage = 1;
+        businessTitleFacet = '';
+        postingTypeFacet = '';
+        salaryRangeFacet = '';
+        document.getElementById("q").focus();
+        sortType = 'featured';
+
+        map = new Microsoft.Maps.Map(document.getElementById("jobs-page-map"),
+            {
+                credentials: "Ag6emoVznJlat4hHnw7nrYGDlQ43ZjXAY7e-8R4bu8ZC7K1d8ORGhZMBkVu3KAVq",
+                center: new Microsoft.Maps.Location(40.736224, -73.992511),
+                zoom: 12
+            });
+
+        Search();
+
+        // Execute search if user clicks enter
+        $("#q").keyup(function (event) {
+            if (event.keyCode == 13) {
+                Search();
+            }
+        });
+
+
+
+    });
+
+    function Search() {
+        $("#job_details_div").html("Loading...");
+        var q = $("#q").val();
+        // Get center of map to use to score the search results
+        $.post('/home/search',
+        {
+            q: q,
+            businessTitleFacet: businessTitleFacet,
+            postingTypeFacet: postingTypeFacet,
+            salaryRangeFacet: salaryRangeFacet,
+            sortType: sortType,
+            lat: map.getCenter().latitude,
+            lon: map.getCenter().longitude,
+            currentPage: currentPage,
+            zipCode: zipCode,
+            maxDistance: maxDistance
+        },
+        function (data) {
+            UpdateBusinessTitleFacets(data.Facets.business_title);
+            UpdatePostingTypeFacets(data.Facets.posting_type);
+            UpdateSalaryRangeFacets(data.Facets.salary_range_from);
+            UpdateJobDetails(data);
+            UpdatePagination(data.Count);
+            UpdateMap(data);
+            UpdateFilterReset();
+        });
+
+    }
+
+    function UpdateFilterReset() {
+        // This allows users to remove filters
+        var htmlString = '';
+        if ((businessTitleFacet != '') || (postingTypeFacet != '') || (salaryRangeFacet |= '')) {
+            htmlString += '<b>Current Filters:</b><br>';
+            if (businessTitleFacet != '')
+                htmlString += businessTitleFacet + ' [<a href="javascript:void(0)" onclick="RemoveFacet(\'businessTitleFacet\')">X</a>]<br>';
+            if (postingTypeFacet != '')
+                htmlString += postingTypeFacet + ' [<a href="javascript:void(0)" onclick="RemoveFacet(\'postingTypeFacet\')">X</a>]<br>';
+            if (salaryRangeFacet != '') {
+                var lowRange = parseInt(salaryRangeFacet);
+                var highRange = lowRange + 49999;
+                htmlString += '$' + lowRange.toLocaleString() + ' - $' + highRange.toLocaleString() + ' [<a href="javascript:void(0)" onclick="RemoveFacet(\'salaryRangeFacet\')">X</a>]<br>';
+            }
+        }
+        $("#filterReset").html(htmlString);
+    }
+
+    function RemoveFacet(facet) {
+        // Remove a facet
+        if (facet == "businessTitleFacet")
+            businessTitleFacet = '';
+        if (facet == "postingTypeFacet")
+            postingTypeFacet = '';
+        if (facet == "salaryRangeFacet")
+            salaryRangeFacet = '';
+
+        Search();
+    }
+
+    function UpdateMap(data) {
+        // Iterate the results and add to map
+        while (map.entities.getLength() > 0) {
+            try {
+                map.entities.clear();
+            }
+            catch (e) {
+            }
+        }
+        pinInfobox = new Microsoft.Maps.Infobox(new Microsoft.Maps.Location(0, 0), { width: 300, height: 100, visible: false });
+        infoboxLayer.push(pinInfobox);
+        for (var i = 0; i < data.Results.length; i++) {
+            var latLon = new Microsoft.Maps.Location(data.Results[i].Document.geo_location.Latitude, data.Results[i].Document.geo_location.Longitude);
+            var pin = new Microsoft.Maps.Pushpin(latLon, { text: i + 1 });
+            pin.Title = data.Results[i].Document.business_title;
+            pin.Description = data.Results[i].Document.work_location + '<br><a href="/home/jobdetails?id=' + data.Results[i].Document.id + '" class="read-more">Read More</a>';
+            Microsoft.Maps.Events.addHandler(pin, 'click', displayInfobox);
+            Microsoft.Maps.Events.addHandler(map, 'viewchange', hideInfobox);
+            map.entities.push(pin); //add pushpin to pinLayer
+            map.entities.push(infoboxLayer);
+        }
+    }
+
+    function displayInfobox(e) {
+        if (e.targetType == "pushpin") {
+            // This will readjust the location of the map to fit the infobox
+            pinInfobox.setOptions({ title: e.target.Title, description: e.target.Description, visible: true, offset: new Microsoft.Maps.Point(0, 25) });
+            pinInfobox.setLocation(e.target.getLocation());
+
+            //A buffer limit to use to specify the infobox must be away from the edges of the map.
+            var buffer = 25;
+
+            var infoboxOffset = pinInfobox.getOffset();
+            var infoboxAnchor = pinInfobox.getAnchor();
+            var infoboxLocation = map.tryLocationToPixel(e.target.getLocation(), Microsoft.Maps.PixelReference.control);
+
+            var dx = infoboxLocation.x + infoboxOffset.x - infoboxAnchor.x;
+            var dy = infoboxLocation.y - 25 - infoboxAnchor.y;
+
+            if (dy < buffer) {    //Infobox overlaps with top of map.
+                //Offset in opposite direction.
+                dy *= -1;
+
+                //add buffer from the top edge of the map.
+                dy += buffer;
+            } else {
+                //If dy is greater than zero than it does not overlap.
+                dy = 0;
+            }
+
+            if (dx < buffer) {    //Check to see if overlapping with left side of map.
+                //Offset in opposite direction.
+                dx *= -1;
+
+                //add a buffer from the left edge of the map.
+                dx += buffer;
+            } else {              //Check to see if overlapping with right side of map.
+                dx = map.getWidth() - infoboxLocation.x + infoboxAnchor.x - pinInfobox.getWidth();
+
+                //If dx is greater than zero then it does not overlap.
+                if (dx > buffer) {
+                    dx = 0;
+                } else {
+                    //add a buffer from the right edge of the map.
+                    dx -= buffer;
+                }
+            }
+
+            //Adjust the map so infobox is in view
+            if (dx != 0 || dy != 0) {
+                map.setView({ centerOffset: new Microsoft.Maps.Point(dx, dy), center: map.getCenter() });
+            }
+        }
+    }
+
+    function hideInfobox(e) {
+        pinInfobox.setOptions({ visible: false });
+    }
+
+    function UpdateZipCode()
+    {
+        zipCode = $("#zipCode").val();
+        Search();
+    }
+
+    function UpdatePagination(docCount) {
+        // Update the pagination
+        var totalPages = Math.round(docCount / 10);
+        // Set a max of 5 items and set the current page in middle of pages
+        var startPage = currentPage;
+        if ((startPage == 1) || (startPage == 2))
+            startPage = 1;
+        else
+            startPage -= 2;
+
+        var maxPage = startPage + 5;
+        if (totalPages < maxPage)
+            maxPage = totalPages + 1;
+        var backPage = parseInt(currentPage) - 1;
+        if (backPage < 1)
+            backPage = 1;
+        var forwardPage = parseInt(currentPage) + 1;
+
+        var htmlString = '<li><a href="javascript:void(0)" onclick="GoToPage(\'' + backPage + '\')" class="fa fa-angle-left"></a></li>';
+        for (var i = startPage; i < maxPage; i++) {
+            if (i == currentPage)
+                htmlString += '<li  class="active"><a href="#">' + i + '</a></li>';
+            else
+                htmlString += '<li><a href="javascript:void(0)" onclick="GoToPage(\'' + parseInt(i) + '\')">' + i + '</a></li>';
+        }
+
+        htmlString += '<li><a href="javascript:void(0)" onclick="GoToPage(\'' + forwardPage + '\')" class="fa fa-angle-right"></a></li>';
+        $("#pagination").html(htmlString);
+        $("#paginationFooter").html(htmlString);
+
+
+    }
+
+    function GoToPage(page) {
+        currentPage = page;
+        Search();
+    }
+
+    function UpdateBusinessTitleFacets(data) {
+        var facetResultsHTML = '';
+        for (var i = 0; i < data.length; i++) {
+            facetResultsHTML += '<li><a href="javascript:void(0)" onclick="ChooseBusinessTitleFacet(\'' + data[i].Value + '\');">' + data[i].Value + ' (' + data[i].Count + ')</span></a></li>';
+        }
+
+        $("#business_title_facets").html(facetResultsHTML);
+    }
+
+    function ChooseBusinessTitleFacet(facet) {
+        businessTitleFacet = facet;
+        Search();
+    }
+
+
+    function UpdatePostingTypeFacets(data) {
+        var facetResultsHTML = '';
+        for (var i = 0; i < data.length; i++) {
+            facetResultsHTML += '<li><a href="javascript:void(0)" onclick="ChoosePostingTypeFacet(\'' + data[i].Value + '\');">' + data[i].Value + ' (' + data[i].Count + ')</span></a></li>';
+        }
+
+        $("#posting_type_facets").html(facetResultsHTML);
+    }
+
+    function ChoosePostingTypeFacet(facet) {
+        postingTypeFacet = facet;
+        Search();
+    }
+
+    function UpdateSalaryRangeFacets(data) {
+        var facetResultsHTML = '';
+        for (var i = 0; i < data.length; i++) {
+            var lowRange = parseInt(data[i].Value);
+            var highRange = lowRange + 49999;
+
+            facetResultsHTML += '<li><a href="javascript:void(0)" onclick="ChooseSalaryRangeFacet(\'' + data[i].Value + '\');">$' + lowRange.toLocaleString() + ' - $' + highRange.toLocaleString() + ' (' + data[i].Count + ')</span></a></li>';
+        }
+
+        $("#salary_range_facets").html(facetResultsHTML);
+    }
+
+    function ChooseSalaryRangeFacet(facet) {
+        salaryRangeFacet = facet;
+        Search();
+    }
+
+    function setSortType() {
+        sortType = $("#cmbSortType").val();
+        Search();
+    }
+
+    function SetMaxDistance() {
+        maxDistance = $("#cmbDistance").val();
+        zipCode = $("#zipCode").val();
+        Search();
+    }
+
+    function UpdateJobDetails(data) {
+        var jobDetailsHTML = '';
+        var imgCounter = 0;
+        var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+        ];
+        $("#available-jobs-label").html('Available Jobs <small>(' + data.Count + " jobs)</small>");
+        $("#jobs-count").html(data.Count);
+
+        $("#available_jobs_subheader").html(data.Count + ' Available Jobs');
+
+        for (var i = 0; i < data.Results.length; i++) {
+
+            jobDetailsHTML += '<div class="jobs-item with-thumb">';
+            imgCounter++;
+            if (imgCounter == 10)
+                imgCounter = 0;
+            jobDetailsHTML += '<div class="thumb"><img src="/images/content/bus-0' + imgCounter + '.png" alt=""></div>';
+            jobDetailsHTML += '<div class="clearfix visible-xs"></div>';
+            var postingDate = data.Results[i].Document.posting_date;
+            var date = new Date(parseInt(postingDate.substr(6)));
+
+            jobDetailsHTML += '<div class="date">' + date.getDay() + ' <span>' + monthNames[date.getMonth()] + '</span></div>';
+
+            var featuredListing = '';
+            if (data.Results[0].Document.tags.length > 0)
+                featuredListing = ' - Featured Job';
+
+            jobDetailsHTML += '<h6 class="title"><a href="/home/jobdetails?id=' + data.Results[i].Document.id + '">' + data.Results[i].Document.business_title + '</a>&nbsp;' + featuredListing + '</h6>';
+            jobDetailsHTML += '<span class="meta">' + data.Results[i].Document.work_location + '</span>';
+
+            jobDetailsHTML += '<p class="description"><b>Salary:</b> $' + data.Results[i].Document.salary_range_from.toLocaleString();
+            if (data.Results[i].Document.salary_range_from != data.Results[i].Document.salary_range_to)
+                jobDetailsHTML += ' to $' + data.Results[i].Document.salary_range_to.toLocaleString();
+            jobDetailsHTML += ' ' + data.Results[i].Document.salary_frequency + '</p>';
+
+            var jobDesc = data.Results[i].Document.job_description;
+            jobDesc = jobDesc.substring(0, jobDesc.substring(0, 500).lastIndexOf(' ') + 1);
+            if (data.Results[i].Highlights != null)
+                jobDesc = data.Results[i].Highlights.job_description
+            jobDetailsHTML += '<p class="description">' + jobDesc + '...&nbsp;&nbsp;&nbsp;<a href="/home/jobdetails?id=' + data.Results[i].Document.id + '" class="read-more">Read More</a></p>';
+
+            jobDetailsHTML += '</div>';
+            jobDetailsHTML += '</div>';
+
+        }
+
+        $("#job_details_div").html(jobDetailsHTML);
+    }
+
+</script>
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-4 page-sidebar">
+            <aside>
+                <div class="sidebar-container">
+                    <div class="widget sidebar-widget jobs-search-widget">
+                        <h5 class="widget-title" id="title">Search</h5>
+                        <div class="widget-content clearfix">
+                            <div id="remote">
+                                <input class="form-control walkthrough-1" type="text" id="q" placeholder="Search Jobs">
+
+                                <select class="form-control pull-left walkthrough-2" id="cmbDistance" onchange="SetMaxDistance();">
+                                    <option value="0">Any distance from</option>
+                                    <option value="1">Within 1 KM of</option>
+                                    <option value="5">Within 5 KM of</option>
+                                    <option value="20">Within 20 KM of</option>
+                                    <option value="50">Within 50 KM of</option>
+                                </select>
+                                <input type="text" id="zipCode" class="form-control pull-left" value="10001" placeholder="10001" onchange="UpdateZipCode();">
+                                <input type="submit" class="typeahead search-submit" value=" " onclick="Search();">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="widget sidebar-widget jobs-filter-widget">
+                        <h5 class="widget-title">Filter Results</h5>
+                        <p id="filterReset"></p>
+                        <div class="widget-content">
+                            <h6 id="businessTitleFacetTitle">Business Title</h6>
+                            <ul class="filter-list" id="business_title_facets">
+                           </ul>
+
+                            <h6>Location</h6>
+                            <ul class="filter-list" id="posting_type_facets">
+                            </ul>
+
+                            <h6>Posting Type</h6>
+                            <ul class="filter-list" id="posting_type_facets"></ul>
+
+                            <h6>Minimum Salary</h6>
+                            <ul class="filter-list" id="salary_range_facets">
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+        </div> <!-- end .page-sidebar -->
+
+        <div class="col-sm-8 page-content">
+            <div id="jobs-page-map" style="position:relative;width:750px; height:350px">
+            </div>
+
+            <h3><span class="jobs-count" id="jobs-count"></span> Available Jobs</h3>
+
+            <div class="clearfix">
+                <select class="form-control pull-left" id="cmbSortType" onchange="setSortType();">
+                    <option value="featured">Relevance</option>
+                    <option value="salaryDesc">Salary (High to Low)</option>
+                    <option value="salaryIncr">Salary (Low to High)</option>
+                    <option value="mostRecent">Most Recently Added</option>
+                </select>
+
+                <ul id="pagination" class="pagination pull-right">
+                </ul>
+            </div>
+
+            <div id="job_details_div">
+            </div>
+
+            <div class="clearfix">
+                <ul id="paginationFooter" class="pagination pull-right">
+                </ul>
+            </div>
+        </div> <!-- end .page-content -->
+    </div> <!-- end .container -->
+</div> <!-- end .row -->

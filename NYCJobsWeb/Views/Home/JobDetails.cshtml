@@ -1,0 +1,226 @@
+﻿<script src="http://twitter.github.io/typeahead.js/js/jquery-1.10.2.min.js"></script>
+<script type="text/javascript" src="http://ecn.dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=7.0"></script>
+
+<script>
+    var lat = 40.736224;
+    var lon = -73.992511;
+    var pinLayer, infoboxLayer;
+    var pinInfobox = null;
+    var infoboxLayer = new Microsoft.Maps.EntityCollection();
+    var pinLayer = new Microsoft.Maps.EntityCollection();
+
+    $(function () {
+        LookUp();
+    });
+    
+    function LookUp() {
+        // Get center of map to use to score the search results
+        var query_string = {};
+        var query = window.location.search.substring(1);
+        var vars = query.split("&");
+        if (vars.length > 0) {
+            $.post('/home/lookup',
+            {
+                id: vars[0].substring(3)
+            },
+            function (data) {
+                UpdateJobDetails(data);
+            });
+        }
+
+    }
+
+    function CleanText(text)
+    {
+        while (text.indexOf('â€¢') > -1)
+        {
+            text = text.replace('â€¢', '<br />- ');
+        }
+
+        while (text.indexOf(/\n/g) > -1) {
+            text = text.replace(/\n/g, "<br />");
+        }
+
+        while (text.indexOf('â€™') > -1) {
+            text = text.replace('â€™', "'");
+        }
+
+        
+        return text;
+    }
+
+    function UpdateJobDetails(data) {
+        var jobDetailsHTML = '';
+        var imgCounter = 0;
+        var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+        ];
+
+        $("#job_id").html(data.Result.job_id);
+        $("#work_location").html(data.Result.work_location);
+        $("#business_title").html(data.Result.business_title);
+        $("#civil_service_title").html(data.Result.civil_service_title);
+        
+
+        var salary = '$' + data.Result.salary_range_from.toLocaleString();
+        if (data.Result.salary_range_from != data.Result.salary_range_to)
+            salary += ' to $' + data.Result.salary_range_to.toLocaleString();
+        salary += ' ' + data.Result.salary_frequency;
+        $("#salary").html(salary);
+
+        $("#agency").html(data.Result.agency);
+        $("#division").html(data.Result.division_work_unit);
+        $("#hours_per_shift").html(data.Result.hours_per_shift);
+        $("#level").html(data.Result.level);
+        $("#num_of_positions").html(data.Result.num_of_positions);
+        $("#posting_type").html(data.Result.posting_type);
+        
+        $("#job_description").html(CleanText(data.Result.job_description));
+
+        $("#minimum_qual_requirements").html(CleanText(data.Result.minimum_qual_requirements));
+        $("#preferred_skills").html(CleanText(data.Result.preferred_skills));
+        $("#residency_requirement").html(CleanText(data.Result.residency_requirement));
+        $("#to_apply").html(CleanText(data.Result.to_apply));
+
+        var postingDate = data.Result.posting_date;
+        var date = new Date(parseInt(postingDate.substr(6)));
+        $("#dateDiv").html('<div class="date">' + date.getDay() + ' <span>' + monthNames[date.getMonth()] + '</span></div>');
+
+        $("#business_title_main").html(data.Result.business_title);
+        $("#work_location_main").html(data.Result.work_location);
+
+        map = new Microsoft.Maps.Map(document.getElementById("jobs-single-page-map"),
+        {
+            credentials: "Ag6emoVznJlat4hHnw7nrYGDlQ43ZjXAY7e-8R4bu8ZC7K1d8ORGhZMBkVu3KAVq",
+            center: new Microsoft.Maps.Location(data.Result.geo_location.Latitude, data.Result.geo_location.Longitude),
+            zoom: 17
+        });
+
+        map.setView({ mapTypeId: Microsoft.Maps.MapTypeId.birdseye });
+        var latLon = new Microsoft.Maps.Location(data.Result.geo_location.Latitude, data.Result.geo_location.Longitude);
+        var pin = new Microsoft.Maps.Pushpin(latLon, { text: 1 });
+        map.entities.push(pin); //add pushpin to pinLayer
+
+    }
+
+
+
+</script>
+<div id="page-content">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-4 page-sidebar">
+                <aside>
+                    <div class="widget sidebar-widget white-container candidates-single-widget">
+                        <div class="widget-content">
+                            <div id="jobs-single-page-map" style="position:relative;width:300px; height:300px"></div>
+
+                            <h5 class="bottom-line">Job Details</h5>
+
+                            <table>
+                                <tbody>
+                                    <tr>
+                                        <td>ID</td>
+                                        <td id="job_id"></td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>Location</td>
+                                        <td id="work_location"></td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>Role</td>
+                                        <td id="business_title"></td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>Title</td>
+                                        <td id="civil_service_title">-</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>Salary</td>
+                                        <td id="salary">-</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>Agency</td>
+                                        <td id="agency">-</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>Division</td>
+                                        <td id="division">-</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>Hours / Shift</td>
+                                        <td id="hours_per_shift">-</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>Level</td>
+                                        <td id="level">-</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td># of Positions</td>
+                                        <td id="num_of_positions">-</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>Posting Type</td>
+                                        <td id="posting_type">-</td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                </aside>
+            </div> <!-- end .page-sidebar -->
+
+            <div class="col-sm-8 page-content">
+                <div class="clearfix mb30 hidden-xs">
+                    <a href="/" class="btn btn-gray pull-left">Back to Listings</a>
+                </div>
+
+                <div class="jobs-item jobs-single-item">
+                    <div class="thumb"><img src="/images/content/bus-00.png" alt=""></div>
+                    <div class="clearfix visible-xs"></div>
+                    <div id="dateDiv"></div>
+                    <h6 id="business_title_main" class="title"></h6>
+
+                    <span id="work_location_main" class="meta"></span>
+
+                    <ul class="top-btns">
+                        <li><a href="#" class="btn btn-gray fa fa-star"></a></li>
+                    </ul>
+
+                    <div id="job_description">Loading...</div>
+
+                    <h5>Minimum Qualifications</h5>
+                    <div id="minimum_qual_requirements"></div>
+
+                    <h5>Preferred Skills</h5>
+                    <div id="preferred_skills"></div>
+
+                    <h5>Residency Requirement</h5>
+                    <div id="residency_requirement"></div>
+
+                    <hr>
+
+                    <div class="clearfix">
+                        <h5>To Apply</h5>
+                        <div id="to_apply"></div>
+                        <br />
+
+                    </div>
+                </div>
+
+            </div> <!-- end .page-content -->
+        </div>
+    </div> <!-- end .container -->
+</div> <!-- end #page-content -->
+
