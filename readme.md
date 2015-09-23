@@ -3,7 +3,4 @@ This is an <a href="http://azure.microsoft.com/en-us/services/search/">Azure Sea
 
 You can see an online version of this sample [here](http://azjobsdemo.azurewebsites.net/).
 
-![Demo Screen Shot](https://raw.githubusercontent.com/liamca/AzureSearchDemos/master/NYCJobs.NET/azure_search_jobs_demo.png)
-
-## License
-This sample is licensed under the [MIT License](http://opensource.org/licenses/MIT), although it also included a Guided Tour capability provided by [BootStrapTour](http://bootstraptour.com) that is currently  licensed under the Apache License v2.0.
+![Demo Screen Shot](https://raw.githubusercontent.com/Azure-Samples/master/NYCJobs.NET/azure_search_jobs_demo.png)
