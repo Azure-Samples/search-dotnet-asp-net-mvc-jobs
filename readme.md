@@ -3,4 +3,4 @@ This is an <a href="http://azure.microsoft.com/en-us/services/search/">Azure Sea
 
 You can see an online version of this sample [here](http://azjobsdemo.azurewebsites.net/).
 
-![Demo Screen Shot](https://raw.githubusercontent.com/Azure-Samples/master/NYCJobs.NET/azure_search_jobs_demo.png)
+![Demo Screen Shot](https://raw.githubusercontent.com/Azure-Samples/search-dotnet-asp-net-mvc-jobs/master/azure_search_jobs_demo.png?token=ADRiDX3CZ28iz93_t27YIkSQ5KUvAkVCks5WDA2pwA%3D%3D)
