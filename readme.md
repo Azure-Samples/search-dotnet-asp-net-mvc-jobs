@@ -1,7 +1,7 @@
 ---
-services: Azure Search, ASP.NET MVC
-platforms: Azure
-author: azure
+services: search
+platforms: dotnet
+author: liamca
 ---
 
 # Azure Search .NET - Jobs Website Sample
