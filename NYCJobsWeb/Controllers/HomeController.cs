@@ -51,6 +51,10 @@ namespace NYCJobsWeb.Controllers
             var response = _jobsSearch.Search(q, businessTitleFacet, postingTypeFacet, salaryRangeFacet, sortType, lat, lon, currentPage, maxDistance, maxDistanceLat, maxDistanceLon);
             return new JsonResult
             {
+                // ***************************************************************************************************************************
+                // If you get an error here, make sure to check that you updated the SearchServiceName and SearchServiceApiKey in Web.config
+                // ***************************************************************************************************************************
+
                 JsonRequestBehavior = JsonRequestBehavior.AllowGet,
                 Data = new NYCJob() { Results = response.Results, Facets = response.Facets, Count = Convert.ToInt32(response.Count) }
             };
