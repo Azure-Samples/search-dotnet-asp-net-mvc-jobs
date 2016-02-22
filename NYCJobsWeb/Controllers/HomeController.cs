@@ -12,7 +12,7 @@ namespace NYCJobsWeb.Controllers
     public class HomeController : Controller
     {
         private JobsSearch _jobsSearch = new JobsSearch();
-        
+
         // GET: Home
         public ActionResult Index()
         {
@@ -24,8 +24,8 @@ namespace NYCJobsWeb.Controllers
             return View();
         }
 
-        public ActionResult Search(string q = "", string businessTitleFacet = "", string postingTypeFacet = "", string salaryRangeFacet = "", 
-            string sortType = "", double lat = 40.736224, double lon = -73.99251, int currentPage = 0, int zipCode = 10001, 
+        public ActionResult Search(string q = "", string businessTitleFacet = "", string postingTypeFacet = "", string salaryRangeFacet = "",
+            string sortType = "", double lat = 40.736224, double lon = -73.99251, int currentPage = 0, int zipCode = 10001,
             int maxDistance = 0)
         {
             // If blank search, assume they want to search everything
@@ -40,7 +40,7 @@ namespace NYCJobsWeb.Controllers
             if (maxDistance > 0)
             {
                 var zipReponse = _jobsSearch.SearchZip(zipCode.ToString());
-                foreach (var result in zipReponse)
+                foreach (var result in zipReponse.Results)
                 {
                     var doc = (dynamic)result.Document;
                     maxDistanceLat = Convert.ToString(doc["geo_location"].Latitude);
@@ -66,7 +66,7 @@ namespace NYCJobsWeb.Controllers
             // Call suggest query and return results
             var response = _jobsSearch.Suggest(term, fuzzy);
             List<string> suggestions = new List<string>();
-            foreach (var result in response)
+            foreach (var result in response.Results)
             {
                 suggestions.Add(result.Text);
             }
@@ -88,7 +88,7 @@ namespace NYCJobsWeb.Controllers
                 return new JsonResult
                 {
                     JsonRequestBehavior = JsonRequestBehavior.AllowGet,
-                    Data = new NYCJobLookup() { Result = response.Document }
+                    Data = new NYCJobLookup() { Result = response }
                 };
             }
             else

@@ -29,7 +29,7 @@ namespace NYCJobsWeb
                 _searchClient = new SearchServiceClient(searchServiceName, new SearchCredentials(apiKey));
                 _indexClient = _searchClient.Indexes.GetClient(IndexName);
                 _indexZipClient = _searchClient.Indexes.GetClient(IndexZipCodes);
-                
+
             }
             catch (Exception e)
             {
@@ -37,7 +37,7 @@ namespace NYCJobsWeb
             }
         }
 
-        public DocumentSearchResponse Search(string searchText, string businessTitleFacet, string postingTypeFacet, string salaryRangeFacet,
+        public DocumentSearchResult Search(string searchText, string businessTitleFacet, string postingTypeFacet, string salaryRangeFacet,
             string sortType, double lat, double lon, int currentPage, int maxDistance, string maxDistanceLat, string maxDistanceLon)
         {
             // Execute search based on query string
@@ -47,7 +47,7 @@ namespace NYCJobsWeb
                 {
                     SearchMode = SearchMode.Any,
                     Top = 10,
-                    Skip = currentPage-1,
+                    Skip = currentPage - 1,
                     // Limit results
                     Select = new List<String>() {"id", "agency", "posting_type", "num_of_positions", "business_title", 
                         "salary_range_from", "salary_range_to", "salary_frequency", "work_location", "job_description",
@@ -62,16 +62,20 @@ namespace NYCJobsWeb
                     Facets = new List<String>() { "business_title", "posting_type", "level", "salary_range_from,interval:50000" },
                 };
                 // Define the sort type
-                if (sortType == "featured") {
+                if (sortType == "featured")
+                {
                     sp.ScoringProfile = "jobsScoringFeatured";      // Use a scoring profile
-                    sp.ScoringParameters = new List<String>() { "featuredParam:featured", "mapCenterParam:" + lon + "," + lat };       // Make sure not to put spaces after the :
-                } else if (sortType == "salaryDesc")
+                    sp.ScoringParameters = new List<ScoringParameter>();
+                    sp.ScoringParameters.Add(new ScoringParameter("featuredParam", "featured"));
+                    sp.ScoringParameters.Add(new ScoringParameter("mapCenterParam", lon + "," + lat));
+                }
+                else if (sortType == "salaryDesc")
                     sp.OrderBy = new List<String>() { "salary_range_from desc" };
                 else if (sortType == "salaryIncr")
                     sp.OrderBy = new List<String>() { "salary_range_from" };
                 else if (sortType == "mostRecent")
                     sp.OrderBy = new List<String>() { "posting_date desc" };
-                
+
 
                 // Add filtering
                 string filter = null;
@@ -90,7 +94,7 @@ namespace NYCJobsWeb
                         filter += " and ";
                     filter += "salary_range_from ge " + salaryRangeFacet + " and salary_range_from lt " + (Convert.ToInt32(salaryRangeFacet) + 50000).ToString();
                 }
-                
+
                 if (maxDistance > 0)
                 {
                     if (filter != null)
@@ -109,7 +113,7 @@ namespace NYCJobsWeb
             return null;
         }
 
-        public DocumentSearchResponse SearchZip(string zipCode)
+        public DocumentSearchResult SearchZip(string zipCode)
         {
             // Execute search based on query string
             try
@@ -128,7 +132,7 @@ namespace NYCJobsWeb
             return null;
         }
 
-        public DocumentSuggestResponse Suggest(string searchText, bool fuzzy)
+        public DocumentSuggestResult Suggest(string searchText, bool fuzzy)
         {
             // Execute search based on query string
             try
@@ -148,7 +152,7 @@ namespace NYCJobsWeb
             return null;
         }
 
-        public DocumentGetResponse LookUp(string id)
+        public Document LookUp(string id)
         {
             // Execute geo search based on query string
             try
