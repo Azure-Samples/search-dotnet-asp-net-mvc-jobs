@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataLoader", "DataLoader\DataLoader.csproj", "{ECC9C982-9638-4241-8903-A0BFD3240571}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{ECC9C982-9638-4241-8903-A0BFD3240571}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ECC9C982-9638-4241-8903-A0BFD3240571}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ECC9C982-9638-4241-8903-A0BFD3240571}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ECC9C982-9638-4241-8903-A0BFD3240571}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
