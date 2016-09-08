@@ -3,6 +3,7 @@ using Microsoft.Azure.Search.Models;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Globalization;
 using System.Linq;
 using System.Web;
 
@@ -67,7 +68,7 @@ namespace NYCJobsWeb
                     sp.ScoringProfile = "jobsScoringFeatured";      // Use a scoring profile
                     sp.ScoringParameters = new List<ScoringParameter>();
                     sp.ScoringParameters.Add(new ScoringParameter("featuredParam", "featured"));
-                    sp.ScoringParameters.Add(new ScoringParameter("mapCenterParam", lon + "," + lat));
+                    sp.ScoringParameters.Add(new ScoringParameter("mapCenterParam", lon.ToString(CultureInfo.InvariantCulture) + "," + lat.ToString(CultureInfo.InvariantCulture)));
                 }
                 else if (sortType == "salaryDesc")
                     sp.OrderBy = new List<String>() { "salary_range_from desc" };

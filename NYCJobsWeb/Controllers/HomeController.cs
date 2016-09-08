@@ -3,6 +3,7 @@ using NYCJobsWeb.Models;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Globalization;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -43,8 +44,8 @@ namespace NYCJobsWeb.Controllers
                 foreach (var result in zipReponse.Results)
                 {
                     var doc = (dynamic)result.Document;
-                    maxDistanceLat = Convert.ToString(doc["geo_location"].Latitude);
-                    maxDistanceLon = Convert.ToString(doc["geo_location"].Longitude);
+                    maxDistanceLat = Convert.ToString(doc["geo_location"].Latitude, CultureInfo.InvariantCulture);
+                    maxDistanceLon = Convert.ToString(doc["geo_location"].Longitude, CultureInfo.InvariantCulture);
                 }
             }
 
