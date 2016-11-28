@@ -1,5 +1,6 @@
 ﻿using Microsoft.Azure.Search;
 using Microsoft.Azure.Search.Models;
+using Microsoft.Spatial;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -12,9 +13,9 @@ namespace NYCJobsWeb
     public class JobsSearch
     {
         private static SearchServiceClient _searchClient;
-        private static SearchIndexClient _indexClient;
+        private static ISearchIndexClient _indexClient;
         private static string IndexName = "nycjobs";
-        private static SearchIndexClient _indexZipClient;
+        private static ISearchIndexClient _indexZipClient;
         private static string IndexZipCodes = "zipcodes";
 
         public static string errorMessage;
@@ -67,8 +68,8 @@ namespace NYCJobsWeb
                 {
                     sp.ScoringProfile = "jobsScoringFeatured";      // Use a scoring profile
                     sp.ScoringParameters = new List<ScoringParameter>();
-                    sp.ScoringParameters.Add(new ScoringParameter("featuredParam", "featured"));
-                    sp.ScoringParameters.Add(new ScoringParameter("mapCenterParam", lon.ToString(CultureInfo.InvariantCulture) + "," + lat.ToString(CultureInfo.InvariantCulture)));
+                    sp.ScoringParameters.Add(new ScoringParameter("featuredParam", new List<string> { "featured" }));
+                    sp.ScoringParameters.Add(new ScoringParameter("mapCenterParam", GeographyPoint.Create(lon, lat)));
                 }
                 else if (sortType == "salaryDesc")
                     sp.OrderBy = new List<String>() { "salary_range_from desc" };
