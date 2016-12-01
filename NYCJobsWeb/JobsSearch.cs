@@ -68,7 +68,7 @@ namespace NYCJobsWeb
                 {
                     sp.ScoringProfile = "jobsScoringFeatured";      // Use a scoring profile
                     sp.ScoringParameters = new List<ScoringParameter>();
-                    sp.ScoringParameters.Add(new ScoringParameter("featuredParam", new List<string> { "featured" }));
+                    sp.ScoringParameters.Add(new ScoringParameter("featuredParam", new[] { "featured" }));
                     sp.ScoringParameters.Add(new ScoringParameter("mapCenterParam", GeographyPoint.Create(lon, lat)));
                 }
                 else if (sortType == "salaryDesc")
