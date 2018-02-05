@@ -1,13 +1,14 @@
-﻿<script type="text/javascript" src="http://ecn.dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=7.0"></script>
 <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.10.2.min.js"></script>
 <link rel="stylesheet" href="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.11.4/themes/smoothness/jquery-ui.css">
 <script src="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.11.4/jquery-ui.min.js"></script>
-
 <!-- Attach CSS for step through tutorial tool -->
 <script src="~/Scripts/bootstrap-tour-standalone.min.js"></script>
 <link href="~/Content/bootstrap-tour-standalone.min.css" rel="stylesheet" />
 
+<script type='text/javascript' src='https://www.bing.com/api/maps/mapcontrol?callback=GetMap' async defer></script>
+
 <script>
+
     $(function () {
         $("#q").autocomplete({
             source: "/home/suggest",
@@ -19,62 +20,62 @@
 
         // Set up the guided tour
         var tour = new Tour({
-            storage : false,
+            storage: false,
             steps: [
-            {
-                element: "#title",
-                placement: "bottom",
-                title: "Welcome to the Azure Search - Jobs demo website",
-                content: "This is purely a demonstration of Azure Search, meant to show the core capabilities of the search service.  Let's walk through the various capabilities of Azure Search.  To get started, press Next.&nbsp;&nbsp;&nbsp;<a href='http://aka.ms/azsearch' target='_blank'>Learn More about Azure Search</a>"
-            },
-            {
-                element: "#q",
-                placement: "left",
-                title: "Search Suggestions",
-                content: "A core capability of Azure Search is its ability to provide search suggestions as the user types.  Try typing a few letters and you will see some suggestions shown below the search box making it easy for user to find results.&nbsp;&nbsp;&nbsp;<a href='https://msdn.microsoft.com/en-us/library/azure/mt131377.aspx' target='_blank'>Learn More about Search Suggestions</a>"
-            },
-            {
-                element: "#q",
-                placement: "bottom",
-                title: "Search",
-                content: "Azure Search, searches through results extremely quickly.  Try typing something such as 'analyst' and press ENTER.&nbsp;&nbsp;&nbsp;<a href='https://msdn.microsoft.com/en-us/library/azure/dn798927.aspx' target='_blank'>Learn More</a>"
-            },
-            {
-                element: "#cmbDistance",
-                placement: "left",
-                title: "Geo-spatial Search",
-                content: "Location based searching is often an important part of search applications.  Using Azure Search you can combine textual search with location such as this query that limits results to a specified area.&nbsp;&nbsp;&nbsp;<a href='https://msdn.microsoft.com/en-us/library/azure/dn798927.aspx' target='_blank'>Learn More</a>"
-            },
-            {
-                element: "#pagination",
-                placement: "right",
-                title: "Paging",
-                content: "Paging allows you to limit the number of results displayed on a page and then let the user jump forward and backward in the search results."
-            },
-            {
-                element: "#job_details_div",
-                placement: "right",
-                title: "Search Results",
-                content: "The search results that come back from Azure Search are returned in a JSON format where you then display them as needed in your web page.  Hit highlighting is a tool available from Azure Search that allows you to visually see results in the text that match what the user typed.  For example, if you typed 'analyst' in the search box, you would see this word highlighted in the results.&nbsp;&nbsp;&nbsp;<a href='https://msdn.microsoft.com/en-us/library/azure/dn798927.aspx' target='_blank'>Learn More</a>"
-            },
-            {
-                element: "#jobs-count",
-                placement: "left",
-                title: "Count",
-                content: "Azure Search can return a count of the number of relevant items that match the users search query.&nbsp;&nbsp;&nbsp;<a href='https://msdn.microsoft.com/en-us/library/azure/dn798927.aspx' target='_blank'>Learn More</a>"
-            },
-            {
-                element: "#cmbSortType",
-                placement: "right",
-                title: "Scoring and Sorting",
-                content: "Sometimes you want to be able to let users sort the results, such as in this case where they might want to sort the results by salary, however, sometimes you will want to tune the results that are displayed to the user using 'Scoring'.  This allows you to boost items in the search relevant results in order to improve the user experience or to help meet business objectives.&nbsp;&nbsp;&nbsp;<a href='https://msdn.microsoft.com/en-us/library/azure/dn798928.aspx' target='_blank'>Learn More about Search Scoring</a>"
-            },
-            {
-                element: "#businessTitleFacetTitle",
-                placement: "right",
-                title: "Faceting & Filtering",
-                content: "Faceted navigation is a filtering mechanism that provides self-directed drilldown navigation in search applications. While the term ‘faceted navigation’ might be unfamiliar, it’s almost a given that you have used one before. As the following example shows, faceted navigation is nothing more than the categories used to filter results.  Try clicking on a facet and see how the results are filtered to only include the specified results.&nbsp;&nbsp;&nbsp;<a href='https://msdn.microsoft.com/en-us/library/azure/dn798927.aspx' target='_blank'>Learn More</a>"
-            }
+                {
+                    element: "#title",
+                    placement: "bottom",
+                    title: "Welcome to the Azure Search - Jobs demo website",
+                    content: "This is purely a demonstration of Azure Search, meant to show the core capabilities of the search service.  Let's walk through the various capabilities of Azure Search.  To get started, press Next.&nbsp;&nbsp;&nbsp;<a href='http://aka.ms/azsearch' target='_blank'>Learn More about Azure Search</a>"
+                },
+                {
+                    element: "#q",
+                    placement: "left",
+                    title: "Search Suggestions",
+                    content: "A core capability of Azure Search is its ability to provide search suggestions as the user types.  Try typing a few letters and you will see some suggestions shown below the search box making it easy for user to find results.&nbsp;&nbsp;&nbsp;<a href='https://msdn.microsoft.com/en-us/library/azure/mt131377.aspx' target='_blank'>Learn More about Search Suggestions</a>"
+                },
+                {
+                    element: "#q",
+                    placement: "bottom",
+                    title: "Search",
+                    content: "Azure Search, searches through results extremely quickly.  Try typing something such as 'analyst' and press ENTER.&nbsp;&nbsp;&nbsp;<a href='https://msdn.microsoft.com/en-us/library/azure/dn798927.aspx' target='_blank'>Learn More</a>"
+                },
+                {
+                    element: "#cmbDistance",
+                    placement: "left",
+                    title: "Geo-spatial Search",
+                    content: "Location based searching is often an important part of search applications.  Using Azure Search you can combine textual search with location such as this query that limits results to a specified area.&nbsp;&nbsp;&nbsp;<a href='https://msdn.microsoft.com/en-us/library/azure/dn798927.aspx' target='_blank'>Learn More</a>"
+                },
+                {
+                    element: "#pagination",
+                    placement: "right",
+                    title: "Paging",
+                    content: "Paging allows you to limit the number of results displayed on a page and then let the user jump forward and backward in the search results."
+                },
+                {
+                    element: "#job_details_div",
+                    placement: "right",
+                    title: "Search Results",
+                    content: "The search results that come back from Azure Search are returned in a JSON format where you then display them as needed in your web page.  Hit highlighting is a tool available from Azure Search that allows you to visually see results in the text that match what the user typed.  For example, if you typed 'analyst' in the search box, you would see this word highlighted in the results.&nbsp;&nbsp;&nbsp;<a href='https://msdn.microsoft.com/en-us/library/azure/dn798927.aspx' target='_blank'>Learn More</a>"
+                },
+                {
+                    element: "#jobs-count",
+                    placement: "left",
+                    title: "Count",
+                    content: "Azure Search can return a count of the number of relevant items that match the users search query.&nbsp;&nbsp;&nbsp;<a href='https://msdn.microsoft.com/en-us/library/azure/dn798927.aspx' target='_blank'>Learn More</a>"
+                },
+                {
+                    element: "#cmbSortType",
+                    placement: "right",
+                    title: "Scoring and Sorting",
+                    content: "Sometimes you want to be able to let users sort the results, such as in this case where they might want to sort the results by salary, however, sometimes you will want to tune the results that are displayed to the user using 'Scoring'.  This allows you to boost items in the search relevant results in order to improve the user experience or to help meet business objectives.&nbsp;&nbsp;&nbsp;<a href='https://msdn.microsoft.com/en-us/library/azure/dn798928.aspx' target='_blank'>Learn More about Search Scoring</a>"
+                },
+                {
+                    element: "#businessTitleFacetTitle",
+                    placement: "right",
+                    title: "Faceting & Filtering",
+                    content: "Faceted navigation is a filtering mechanism that provides self-directed drilldown navigation in search applications. While the term ‘faceted navigation’ might be unfamiliar, it’s almost a given that you have used one before. As the following example shows, faceted navigation is nothing more than the categories used to filter results.  Try clicking on a facet and see how the results are filtered to only include the specified results.&nbsp;&nbsp;&nbsp;<a href='https://msdn.microsoft.com/en-us/library/azure/dn798927.aspx' target='_blank'>Learn More</a>"
+                }
 
             ],
             template: "<div class='popover tour'><div class='arrow'></div><h3 class='popover-title'  style='background-color: #0A5489;color:#FFFFFF'></h3><div class='popover-content'></div><div class='popover-navigation'><button class='btn btn-default' data-role='prev'>« Prev</button><span data-role='separator'> </span><button class='btn btn-default' data-role='next'>Next »</button></div><button class='btn btn-default' data-role='end' style='margin:15px;'>End tour</button></nav></div>"
@@ -87,19 +88,19 @@
         tour.start();
 
     });
-</script>
 
-<script type="text/javascript">
     var businessTitleFacet, postingTypeFacet, salaryRangeFacet, sortType, currentPage, zipCode, maxDistance;
     var map = null;
     var lat = 40.736224;
     var lon = -73.992511;
     var pinLayer, infoboxLayer;
     var pinInfobox = null;
-    var infoboxLayer = new Microsoft.Maps.EntityCollection();
-    var pinLayer = new Microsoft.Maps.EntityCollection();
+    var infoboxLayer;
+    var pinLayer;
 
-    $(function () {
+    function GetMap() {
+        infoboxLayer = new Microsoft.Maps.EntityCollection();
+        pinLayer = new Microsoft.Maps.EntityCollection();
         // Load the initial data
         currentPage = 1;
         businessTitleFacet = '';
@@ -126,34 +127,34 @@
 
 
 
-    });
+    }
 
     function Search() {
         $("#job_details_div").html("Loading...");
         var q = $("#q").val();
         // Get center of map to use to score the search results
         $.post('/home/search',
-        {
-            q: q,
-            businessTitleFacet: businessTitleFacet,
-            postingTypeFacet: postingTypeFacet,
-            salaryRangeFacet: salaryRangeFacet,
-            sortType: sortType,
-            lat: map.getCenter().latitude,
-            lon: map.getCenter().longitude,
-            currentPage: currentPage,
-            zipCode: zipCode,
-            maxDistance: maxDistance
-        },
-        function (data) {
-            UpdateBusinessTitleFacets(data.Facets.business_title);
-            UpdatePostingTypeFacets(data.Facets.posting_type);
-            UpdateSalaryRangeFacets(data.Facets.salary_range_from);
-            UpdateJobDetails(data);
-            UpdatePagination(data.Count);
-            UpdateMap(data);
-            UpdateFilterReset();
-        });
+            {
+                q: q,
+                businessTitleFacet: businessTitleFacet,
+                postingTypeFacet: postingTypeFacet,
+                salaryRangeFacet: salaryRangeFacet,
+                sortType: sortType,
+                lat: map.getCenter().latitude,
+                lon: map.getCenter().longitude,
+                currentPage: currentPage,
+                zipCode: zipCode,
+                maxDistance: maxDistance
+            },
+            function (data) {
+                UpdateBusinessTitleFacets(data.Facets.business_title);
+                UpdatePostingTypeFacets(data.Facets.posting_type);
+                UpdateSalaryRangeFacets(data.Facets.salary_range_from);
+                UpdateJobDetails(data);
+                UpdatePagination(data.Count);
+                UpdateMap(data);
+                UpdateFilterReset();
+            });
 
     }
 
@@ -266,8 +267,7 @@
         pinInfobox.setOptions({ visible: false });
     }
 
-    function UpdateZipCode()
-    {
+    function UpdateZipCode() {
         zipCode = $("#zipCode").val();
         Search();
     }
@@ -417,7 +417,6 @@
     }
 
 </script>
-
 <div class="container">
     <div class="row">
         <div class="col-sm-4 page-sidebar">
@@ -428,7 +427,6 @@
                         <div class="widget-content clearfix">
                             <div id="remote">
                                 <input class="form-control walkthrough-1" type="text" id="q" placeholder="Search Jobs">
-
                                 <select class="form-control pull-left walkthrough-2" id="cmbDistance" onchange="SetMaxDistance();">
                                     <option value="0">Any distance from</option>
                                     <option value="1">Within 1 KM of</option>
@@ -441,37 +439,27 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="widget sidebar-widget jobs-filter-widget">
                         <h5 class="widget-title">Filter Results</h5>
                         <p id="filterReset"></p>
                         <div class="widget-content">
                             <h6 id="businessTitleFacetTitle">Business Title</h6>
-                            <ul class="filter-list" id="business_title_facets">
-                           </ul>
-
+                            <ul class="filter-list" id="business_title_facets"></ul>
                             <h6>Location</h6>
-                            <ul class="filter-list" id="posting_type_facets">
-                            </ul>
-
+                            <ul class="filter-list" id="posting_type_facets"></ul>
                             <h6>Posting Type</h6>
                             <ul class="filter-list" id="posting_type_facets"></ul>
-
                             <h6>Minimum Salary</h6>
-                            <ul class="filter-list" id="salary_range_facets">
-                            </ul>
+                            <ul class="filter-list" id="salary_range_facets"></ul>
                         </div>
                     </div>
                 </div>
             </aside>
         </div> <!-- end .page-sidebar -->
-
         <div class="col-sm-8 page-content">
             <div id="jobs-page-map" style="position:relative;width:750px; height:350px">
             </div>
-
             <h3><span class="jobs-count" id="jobs-count"></span> Available Jobs</h3>
-
             <div class="clearfix">
                 <select class="form-control pull-left" id="cmbSortType" onchange="setSortType();">
                     <option value="featured">Relevance</option>
@@ -479,17 +467,12 @@
                     <option value="salaryIncr">Salary (Low to High)</option>
                     <option value="mostRecent">Most Recently Added</option>
                 </select>
-
-                <ul id="pagination" class="pagination pull-right">
-                </ul>
+                <ul id="pagination" class="pagination pull-right"></ul>
             </div>
-
             <div id="job_details_div">
             </div>
-
             <div class="clearfix">
-                <ul id="paginationFooter" class="pagination pull-right">
-                </ul>
+                <ul id="paginationFooter" class="pagination pull-right"></ul>
             </div>
         </div> <!-- end .page-content -->
     </div> <!-- end .container -->
