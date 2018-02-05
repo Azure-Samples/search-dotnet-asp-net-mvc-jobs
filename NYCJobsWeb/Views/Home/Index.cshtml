@@ -160,7 +160,7 @@
     function UpdateFilterReset() {
         // This allows users to remove filters
         var htmlString = '';
-        if ((businessTitleFacet != '') || (postingTypeFacet != '') || (salaryRangeFacet |= '')) {
+        if ((businessTitleFacet != '') || (postingTypeFacet != '') || (salaryRangeFacet != '')) {
             htmlString += '<b>Current Filters:</b><br>';
             if (businessTitleFacet != '')
                 htmlString += businessTitleFacet + ' [<a href="javascript:void(0)" onclick="RemoveFacet(\'businessTitleFacet\')">X</a>]<br>';
