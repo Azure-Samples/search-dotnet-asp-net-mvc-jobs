@@ -1,4 +1,12 @@
 ---
+page_type: sample
+languages:
+- csharp
+products:
+- azure
+- azure-search
+name: NYC Jobs demo - Azure Search .NET
+urlFragment: azure-search-nycjobs
 services: search
 platforms: dotnet
 author: liamca
@@ -6,7 +14,7 @@ author: liamca
 
 # Azure Search .NET - Jobs Website Sample
 
-This is an <a href="http://azure.microsoft.com/en-us/services/search/">Azure Search</a> demo website based on data from the <a href="https://nycopendata.socrata.com/">NYC Open Data initiative</a>.  Jobs listed here should not be considered active.
+This is an <a href="http://azure.microsoft.com/en-us/services/search/">Azure Search</a> demo website based on data from the <a href="https://nycopendata.socrata.com/">New York City Open Data initiative</a>.  Jobs listed here should not be considered active.
 
 You can see an online version of this sample [here](http://azjobsdemo.azurewebsites.net/).
 
