@@ -1,15 +1,13 @@
 ---
 page_type: sample
 languages:
+- javascript
+- html
 - csharp
 products:
 - azure
-- azure-search
-name: NYC Jobs demo - Azure Search .NET
-urlFragment: azure-search-nycjobs
-services: search
-platforms: dotnet
-author: liamca
+description: "This is an Azure Search demo website based on data from the New York City Open Data initiative. Jobs listed here should not be considered active."
+urlFragment: search-dotnet-asp-net-mvc-jobs
 ---
 
 # Azure Search .NET - Jobs Website Sample
