@@ -8,8 +8,8 @@ namespace NYCJobsWeb.Models
 {
     public class NYCJob
     {
-        public FacetResults Facets { get; set; }
-        public IList<SearchResult> Results { get; set; }
+        public IDictionary<string, IList<FacetResult>> Facets { get; set; }
+        public IList<SearchResult<Document>> Results { get; set; }
         public int? Count { get; set; }
     }
 

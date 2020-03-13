@@ -1,20 +1,11 @@
 ﻿<script src="http://twitter.github.io/typeahead.js/js/jquery-1.10.2.min.js"></script>
-<script type="text/javascript" src="http://ecn.dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=7.0"></script>
 
 <script>
-    var lat = 40.736224;
-    var lon = -73.992511;
-    var pinLayer, infoboxLayer;
-    var pinInfobox = null;
-    var infoboxLayer = new Microsoft.Maps.EntityCollection();
-    var pinLayer = new Microsoft.Maps.EntityCollection();
-
     $(function () {
         LookUp();
     });
     
     function LookUp() {
-        // Get center of map to use to score the search results
         var query_string = {};
         var query = window.location.search.substring(1);
         var vars = query.split("&");
@@ -87,18 +78,6 @@
 
         $("#business_title_main").html(data.Result.business_title);
         $("#work_location_main").html(data.Result.work_location);
-
-        map = new Microsoft.Maps.Map(document.getElementById("jobs-single-page-map"),
-        {
-            credentials: "Ag6emoVznJlat4hHnw7nrYGDlQ43ZjXAY7e-8R4bu8ZC7K1d8ORGhZMBkVu3KAVq",
-            center: new Microsoft.Maps.Location(data.Result.geo_location.Latitude, data.Result.geo_location.Longitude),
-            zoom: 17
-        });
-
-        map.setView({ mapTypeId: Microsoft.Maps.MapTypeId.birdseye });
-        var latLon = new Microsoft.Maps.Location(data.Result.geo_location.Latitude, data.Result.geo_location.Longitude);
-        var pin = new Microsoft.Maps.Pushpin(latLon, { text: 1 });
-        map.entities.push(pin); //add pushpin to pinLayer
 
     }
 

@@ -13,9 +13,9 @@ namespace NYCJobsWeb
     public class JobsSearch
     {
         private static SearchServiceClient _searchClient;
-        private static ISearchIndexClient _indexClient;
+        private static SearchIndexClient _indexClient;
         private static string IndexName = "nycjobs";
-        private static ISearchIndexClient _indexZipClient;
+        private static SearchIndexClient _indexZipClient;
         private static string IndexZipCodes = "zipcodes";
 
         public static string errorMessage;
@@ -29,8 +29,8 @@ namespace NYCJobsWeb
 
                 // Create an HTTP reference to the catalog index
                 _searchClient = new SearchServiceClient(searchServiceName, new SearchCredentials(apiKey));
-                _indexClient = _searchClient.Indexes.GetClient(IndexName);
-                _indexZipClient = _searchClient.Indexes.GetClient(IndexZipCodes);
+                _indexClient = new SearchIndexClient(searchServiceName, IndexName, new SearchCredentials(apiKey)); 
+                _indexZipClient = new SearchIndexClient(searchServiceName, IndexZipCodes, new SearchCredentials(apiKey));
 
             }
             catch (Exception e)
@@ -39,7 +39,7 @@ namespace NYCJobsWeb
             }
         }
 
-        public DocumentSearchResult Search(string searchText, string businessTitleFacet, string postingTypeFacet, string salaryRangeFacet,
+        public DocumentSearchResult<Document> Search(string searchText, string businessTitleFacet, string postingTypeFacet, string salaryRangeFacet,
             string sortType, double lat, double lon, int currentPage, int maxDistance, string maxDistanceLat, string maxDistanceLon)
         {
             // Execute search based on query string
@@ -115,7 +115,7 @@ namespace NYCJobsWeb
             return null;
         }
 
-        public DocumentSearchResult SearchZip(string zipCode)
+        public DocumentSearchResult<Document> SearchZip(string zipCode)
         {
             // Execute search based on query string
             try
@@ -134,7 +134,7 @@ namespace NYCJobsWeb
             return null;
         }
 
-        public DocumentSuggestResult Suggest(string searchText, bool fuzzy)
+        public DocumentSuggestResult<Document> Suggest(string searchText, bool fuzzy)
         {
             // Execute search based on query string
             try
