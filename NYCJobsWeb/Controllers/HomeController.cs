@@ -41,7 +41,7 @@ namespace NYCJobsWeb.Controllers
             if (maxDistance > 0)
             {
                 var zipReponse = _jobsSearch.SearchZip(zipCode.ToString());
-                foreach (var result in zipReponse.Results)
+                foreach (var result in zipReponse.GetResults())
                 {
                     var doc = (dynamic)result.Document;
                     maxDistanceLat = Convert.ToString(doc["geo_location"].Latitude, CultureInfo.InvariantCulture);
@@ -57,7 +57,7 @@ namespace NYCJobsWeb.Controllers
                 // ***************************************************************************************************************************
 
                 JsonRequestBehavior = JsonRequestBehavior.AllowGet,
-                Data = new NYCJob() { Results = response.Results, Facets = response.Facets, Count = Convert.ToInt32(response.Count) }
+                Data = new NYCJob() { Results = response.GetResults().ToList(), Facets = response.Facets, Count = Convert.ToInt32(response.TotalCount) }
             };
         }
 
