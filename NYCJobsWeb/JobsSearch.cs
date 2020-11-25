@@ -50,18 +50,18 @@ namespace NYCJobsWeb
                     SearchMode = SearchMode.Any,
                     Size = 10,
                     Skip = currentPage - 1,
-                    // Limit results
-                    //Select = new List<String>() {"id", "agency", "posting_type", "num_of_positions", "business_title", 
-                    //    "salary_range_from", "salary_range_to", "salary_frequency", "work_location", "job_description",
-                    //    "posting_date", "geo_location", "tags"},
                     // Add count
                     IncludeTotalCount = true,
                     // Add search highlights
                     HighlightPreTag = "<b>",
                     HighlightPostTag = "</b>",
-                    // Add facets
-                    //Facets = new List<String>() { "business_title", "posting_type", "level", "salary_range_from,interval:50000" },
                 };
+                List < String > select = new List<String>() {"id", "agency", "posting_type", "num_of_positions", "business_title",
+                        "salary_range_from", "salary_range_to", "salary_frequency", "work_location", "job_description",
+                        "posting_date", "geo_location", "tags"};
+                List<String> facets = new List<String>() { "business_title", "posting_type", "level", "salary_range_from,interval:50000" };
+                AddList(sp.Select, select);
+                AddList(sp.Facets, facets);
                 sp.HighlightFields.Add("job_description");
                
                 // Define the sort type
@@ -166,6 +166,14 @@ namespace NYCJobsWeb
                 Console.WriteLine("Error querying index: {0}\r\n", ex.Message.ToString());
             }
             return null;
+        }
+
+        public void AddList(IList<string> list1, List<String> list2)
+        {
+            foreach(string element in list2)
+            {
+                list1.Add(element);
+            }
         }
     }
 }
